@@ -17,4 +17,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// route pour le lister les entreprises
+use App\Http\Controllers\ListingController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/listings/create', [ListingController::class, 'create'])->name('listings.create');
+    Route::post('/listings', [ListingController::class, 'store'])->name('listings.store');
+    Route::get('/my-listings', [ListingController::class, 'index'])->name('listings.index');
+});
+
 require __DIR__.'/auth.php';

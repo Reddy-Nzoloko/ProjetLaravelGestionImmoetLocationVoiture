@@ -39,6 +39,19 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
+        <!-- Pour entreprise -->
+         <div class="mt-4">
+    <x-input-label for="company_name" :value="__('Nom de votre Entreprise / Agence')" />
+    <x-text-input id="company_name" class="block mt-1 w-full" type="text" name="company_name" :value="old('company_name')" required />
+    <x-input-error :messages="$errors->get('company_name')" class="mt-2" />
+</div>
+
+<div class="mt-4">
+    <x-input-label for="whatsapp_number" :value="__('Numéro WhatsApp (ex: 243...)')" />
+    <x-text-input id="whatsapp_number" class="block mt-1 w-full" type="text" name="whatsapp_number" :value="old('whatsapp_number')" required />
+    <x-input-error :messages="$errors->get('whatsapp_number')" class="mt-2" />
+</div>
+
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
                 {{ __('Already registered?') }}

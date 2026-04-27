@@ -41,6 +41,33 @@ public function store(Request $request)
 
     return back()->with('success', 'Annonce publiée !');
 }
+// methode pour la mise à jour d'une annonce
+public function update(Request $request, Listing $listing)
+{
+    // Sécurité : Seul le propriétaire peut modifier
+    if ($listing->user_id !== auth()->id()) { abort(403); }
+
+    $data = $request->validate([
+        'title' => 'required|string|max:255',
+        'price' => 'required|numeric',
+        'location' => 'required|string',
+        'offer_type' => 'required',
+        'category' => 'required',
+    ]);
+
+    // Gestion des nouvelles images (optionnel)
+    if ($request->hasFile('images')) {
+        $imagePaths = [];
+        foreach ($request->file('images') as $file) {
+            $imagePaths[] = $file->store('listings', 'public');
+        }
+        $data['images'] = $imagePaths;
+    }
+
+    $listing->update($data);
+
+    return back()->with('success', 'Annonce mise à jour avec succès !');
+}
 
 // Pour la suppression
 public function destroy(Listing $listing)

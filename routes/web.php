@@ -23,6 +23,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/listings/create', [ListingController::class, 'create'])->name('listings.create');
     Route::post('/listings', [ListingController::class, 'store'])->name('listings.store');
     Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])->name('listings.destroy');
+    // Route de modification de l'annonce
+    Route::patch('/listings/{listing}', [ListingController::class, 'update'])->name('listings.update');
 });
 
 require __DIR__.'/auth.php';

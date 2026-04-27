@@ -103,9 +103,12 @@
                             </div>
 
                             <div class="flex justify-between items-center gap-2">
-                                <button class="flex-grow inline-flex justify-center items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs font-bold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                                    Modifier
-                                </button>
+                                <button 
+    x-data=""
+    x-on:click.prevent="$dispatch('open-modal', 'edit-listing-{{ $listing->id }}')"
+    class="flex-grow inline-flex justify-center items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs font-bold rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+    Modifier
+</button>
                                 
                                 <form method="POST" action="{{ route('listings.destroy', $listing) }}" onsubmit="return confirm('Supprimer cette publication ?');" class="inline">
                                     @csrf
@@ -119,6 +122,66 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Modale pour la modification -->
+                  <x-modal name="edit-listing-{{ $listing->id }}" focusable>
+    <form method="post" action="{{ route('listings.update', $listing->id) }}" class="p-6" enctype="multipart/form-data">
+        @csrf
+        @method('patch')
+
+        <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+            Modifier : {{ $listing->title }}
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="col-span-2">
+                <x-input-label value="Titre de l'annonce" />
+                <x-text-input name="title" type="text" class="mt-1 block w-full" value="{{ $listing->title }}" required />
+            </div>
+
+            <div class="col-span-2">
+                <x-input-label value="Description détaillée" />
+                <textarea name="description" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="3">{{ $listing->description }}</textarea>
+            </div>
+
+            <div>
+                <x-input-label value="Prix ($)" />
+                <x-text-input name="price" type="number" class="mt-1 block w-full" value="{{ $listing->price }}" required />
+            </div>
+
+            <div>
+                <x-input-label value="Adresse / Quartier" />
+                <x-text-input name="location" type="text" class="mt-1 block w-full" value="{{ $listing->location }}" />
+            </div>
+
+            <div>
+                <x-input-label value="Catégorie" />
+                <select name="category" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm">
+                    <option value="immo" {{ $listing->category == 'immo' ? 'selected' : '' }}>Immobilier</option>
+                    <option value="auto" {{ $listing->category == 'auto' ? 'selected' : '' }}>Véhicule</option>
+                </select>
+            </div>
+
+            <div>
+                <x-input-label value="Type d'offre" />
+                <select name="offer_type" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm">
+                    <option value="vente" {{ $listing->offer_type == 'vente' ? 'selected' : '' }}>Vente</option>
+                    <option value="location" {{ $listing->offer_type == 'location' ? 'selected' : '' }}>Location</option>
+                </select>
+            </div>
+
+            <div class="col-span-2">
+                <x-input-label value="Remplacer les photos (laisser vide pour garder les anciennes)" />
+                <input type="file" name="images[]" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+            </div>
+        </div>
+
+        <div class="mt-6 flex justify-end gap-3">
+            <x-secondary-button x-on:click="$dispatch('close')">Annuler</x-secondary-button>
+            <x-primary-button>Mettre à jour l'annonce</x-primary-button>
+        </div>
+    </form>
+</x-modal>
                 @empty
                     <div class="col-span-full py-20 text-center bg-white dark:bg-gray-800 rounded-3xl border-2 border-dashed border-gray-100 dark:border-gray-700">
                         <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

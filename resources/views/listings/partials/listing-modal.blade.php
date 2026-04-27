@@ -1,8 +1,11 @@
 <x-modal name="create-listing" focusable>
+    @php
+        // On récupère le secteur de l'entreprise de l'utilisateur connecté
+        $sector = auth()->user()->company->activity_sector; 
+    @endphp
 
-<!-- essaie -->
- 
-    <form method="post" action="{{ route('listings.store') }}" class="p-6" x-data="{ category: 'auto' }">
+    <form method="post" action="{{ route('listings.store') }}" enctype="multipart/form-data" class="p-6" 
+          x-data="{ category: '{{ $sector }}' }">
         @csrf
 
         <header>
@@ -10,40 +13,20 @@
                 <svg class="w-5 h-5 me-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
-                {{ __('Nouvelle Annonce') }}
+                {{ __('Nouvelle Annonce') }} 
+                <span class="ms-2 text-sm font-normal text-gray-500">
+                    ({{ $sector === 'auto' ? 'Secteur Automobile' : 'Secteur Immobilier' }})
+                </span>
             </h2>
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {{ __('Remplissez les détails ci-dessous pour publier votre offre sur la plateforme.') }}
-            </p>
         </header>
 
-        <div class="mt-6 flex gap-4">
-            <label class="flex-1 cursor-pointer group">
-                <input type="radio" name="category" value="auto" x-model="category" class="hidden peer">
-                <div class="flex flex-col items-center justify-center p-4 border-2 rounded-xl transition-all peer-checked:border-indigo-600 peer-checked:bg-indigo-50 dark:peer-checked:bg-indigo-900/30 dark:border-gray-700 hover:border-gray-400">
-                    <svg class="w-8 h-8 mb-2 text-gray-500 group-hover:text-indigo-500 peer-checked:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
-                    </svg>
-                    <span class="text-sm font-semibold uppercase tracking-wider">{{ __('Véhicule') }}</span>
-                </div>
-            </label>
-
-            <label class="flex-1 cursor-pointer group">
-                <input type="radio" name="category" value="immo" x-model="category" class="hidden peer">
-                <div class="flex flex-col items-center justify-center p-4 border-2 rounded-xl transition-all peer-checked:border-indigo-600 peer-checked:bg-indigo-50 dark:peer-checked:bg-indigo-900/30 dark:border-gray-700 hover:border-gray-400">
-                    <svg class="w-8 h-8 mb-2 text-gray-500 group-hover:text-indigo-500 peer-checked:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                    </svg>
-                    <span class="text-sm font-semibold uppercase tracking-wider">{{ __('Immobilier') }}</span>
-                </div>
-            </label>
-        </div>
+        <input type="hidden" name="category" value="{{ $sector }}">
 
         <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="col-span-1">
                 <x-input-label for="title" value="Titre de l'annonce" />
-                <x-text-input id="title" name="title" type="text" class="mt-1 block w-full" placeholder="Ex: Toyota RAV4 ou Villa à Goma" required />
+                <x-text-input id="title" name="title" type="text" class="mt-1 block w-full" 
+                    placeholder="{{ $sector === 'auto' ? 'Ex: Toyota RAV4...' : 'Ex: Villa 5 chambres...' }}" required />
             </div>
             <div class="col-span-1">
                 <x-input-label for="price" value="Prix demandé ($)" />
@@ -66,7 +49,8 @@
         </div>
 
         <div class="mt-6 p-5 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl">
-            <div x-show="category === 'auto'" x-transition>
+            
+            <div x-show="category === 'auto'">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <x-input-label value="Marque" />
@@ -82,7 +66,7 @@
                 </div>
             </div>
 
-            <div x-show="category === 'immo'" x-transition>
+            <div x-show="category === 'immo'">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <x-input-label value="Nombre de chambres" />
@@ -101,17 +85,25 @@
         </div>
 
         <div class="mt-4">
+    <x-input-label for="images" value="Photos de l'annonce (Max 5)" />
+    <input type="file" name="images[]" id="images" multiple 
+        class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:bg-gray-900"
+        accept="image/*">
+    <p class="mt-1 text-xs text-gray-500 italic">Vous pouvez sélectionner plusieurs photos à la fois.</p>
+</div>
+
+        <div class="mt-4">
             <x-input-label for="description" value="Description détaillée" />
-            <textarea name="description" rows="4" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" placeholder="Décrivez les points forts de votre offre..."></textarea>
+            <textarea name="description" rows="3" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"></textarea>
         </div>
 
         <div class="mt-8 flex justify-end gap-3">
-            <button type="button" x-on:click="$dispatch('close')" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                {{ __('Annuler') }}
+            <button type="button" x-on:click="$dispatch('close')" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 transition-colors">
+                Annuler
             </button>
 
             <x-primary-button>
-                {{ __('Publier l\'annonce') }}
+                Publier l'annonce
             </x-primary-button>
         </div>
     </form>

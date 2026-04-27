@@ -5,6 +5,9 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Tableau de bord Administrateur') }}
             </h2>
+            <div class="bg-red-500 text-white p-2 mb-4">
+    Secteur d'activité : {{ auth()->user()->company->activity_sector ?? 'AUCUNE COMPAGNIE TROUVÉE' }}
+</div>
             <button 
                 x-data="" 
                 x-on:click.prevent="$dispatch('open-modal', 'create-listing')"

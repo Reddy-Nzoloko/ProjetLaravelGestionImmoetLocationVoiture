@@ -28,39 +28,36 @@ class RegisteredUserController extends Controller
      * Handle an incoming registration request.
      */
     public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'company_name' => ['required', 'string', 'max:255'],
-            'whatsapp_number' => ['required', 'string', 'max:20'],
-        ]);
+{
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        'company_name' => ['required', 'string', 'max:255'],
+        'activity_sector' => ['required', 'in:auto,immo'], // Très important !
+        'whatsapp_number' => ['required', 'string'],
+    ]);
 
-        return DB::transaction(function () use ($request) {
-            
-            // 1. Créer l'entreprise d'abord
-            $company = Company::create([
-                'name' => $request->company_name,
-                'whatsapp_number' => $request->whatsapp_number,
-                'city' => 'Goma',
-                'is_active' => true,
-            ]);
+    // 1. On crée l'entreprise d'abord avec le bon secteur
+    $company = Company::create([
+        'name' => $request->company_name,
+        'activity_sector' => $request->activity_sector,
+        'whatsapp_number' => $request->whatsapp_number,
+        'city' => 'Goma',
+    ]);
 
-            // 2. Créer l'utilisateur lié à cette entreprise
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'company_id' => $company->id,
-                'role' => 'admin',
-            ]);
+    // 2. On crée l'utilisateur lié à cette entreprise
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'company_id' => $company->id,
+    ]);
 
-            event(new Registered($user));
+    event(new Registered($user));
+    Auth::login($user);
 
-            Auth::login($user);
-
-            return redirect(route('dashboard', absolute: false));
-        });
-    }
+    return redirect(route('dashboard', absolute: false));
 }
+}
+

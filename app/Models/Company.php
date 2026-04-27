@@ -8,8 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Company extends Model
 {
     // Autoriser le remplissage de ces champs
-    protected $fillable = ['name', 'logo', 'whatsapp_number', 'city', 'is_active'];
-
+    //protected $fillable = ['name', 'logo', 'whatsapp_number', 'city', 'is_active'];
+protected $fillable = [
+    'name',
+    'activity_sector', 
+    'whatsapp_number',
+    'city',
+    'is_active'
+];
     // Une entreprise a plusieurs utilisateurs (Admins/Agents)
     public function users(): HasMany
     {

@@ -1,4 +1,7 @@
 <x-modal name="create-listing" focusable>
+
+<!-- essaie -->
+ 
     <form method="post" action="{{ route('listings.store') }}" class="p-6" x-data="{ category: 'auto' }">
         @csrf
 

@@ -31,4 +31,15 @@ class ListingController extends Controller
     return redirect()->route('dashboard')->with('success', 'Annonce publiée avec succès !');
 }
 
+// fonction index pour afficher les annonces de l'entreprise de l'utilisateur connecté
+// index
+public function index()
+{
+    // On récupère uniquement les annonces liées à l'entreprise de l'utilisateur
+    $listings = \App\Models\Listing::where('company_id', auth()->user()->company_id)
+        ->latest() 
+        ->get();
+
+    return view('dashboard', compact('listings'));
+}
 }

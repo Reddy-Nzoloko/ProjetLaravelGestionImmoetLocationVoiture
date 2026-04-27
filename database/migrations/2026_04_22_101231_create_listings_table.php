@@ -18,7 +18,7 @@ return new class extends Migration
         $table->string('title');
         $table->text('description');
         $table->decimal('price', 15, 2);
-        $table->enum('category', ['immobilier', 'vehicule']);
+        $table->string('category'); // Acceptera 'auto', 'immo', etc.
         $table->enum('offer_type', ['vente', 'location']);
         $table->json('features')->nullable(); // Ex: {"portes":4} ou {"chambres":3}
         $table->string('status')->default('disponible');

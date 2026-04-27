@@ -7,22 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class Listing extends Model
 {
     protected $fillable = [
-        'company_id', 'user_id', 'title', 'description', 
-        'price', 'category', 'offer_type', 'features', 'status'
+        'user_id',
+        'company_id',
+        'title',
+        'description',
+        'price',
+        'location',
+        'category',
+        'offer_type',    // INDISPENSABLE pour que la location fonctionne
+        'images',        // INDISPENSABLE pour les photos
+        'features',
+        'status'
     ];
 
-    // Pour que le champ 'features' (JSON) soit automatiquement transformé en tableau PHP
     protected $casts = [
+        'images' => 'array',   // Transforme le JSON de la base de données en tableau PHP
         'features' => 'array',
     ];
-
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }

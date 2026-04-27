@@ -8,36 +8,50 @@ use App\Models\Listing;
 class ListingController extends Controller
 {
     // methode store pour enregistrer une nouvelle annonce
-    public function store(Request $request)
+    // Pour l'enregistrement
+public function store(Request $request)
 {
-    $imagePaths = [];
+    $data = $request->validate([
+        'title' => 'required',
+        'price' => 'required|numeric',
+        'offer_type' => 'required', // Vente ou Location
+        'category' => 'required',
+        'images.*' => 'image|max:2048'
+    ]);
 
+    $imagePaths = [];
     if ($request->hasFile('images')) {
-        foreach ($request->file('images') as $image) {
-            // On stocke chaque image et on ajoute le chemin au tableau
-            $path = $image->store('listings', 'public');
-            $imagePaths[] = $path;
+        foreach ($request->file('images') as $file) {
+            $imagePaths[] = $file->store('listings', 'public');
         }
     }
 
-    Listing::create([
-        'user_id' => auth()->id(),
-        'company_id' => auth()->user()->company_id,
-        'title' => $request->title,
-        'category' => $request->category,
-        'price' => $request->price,
-        // On enregistre le tableau des chemins en JSON
-        'images' => $imagePaths, 
-        'features' => [
-            'brand' => $request->brand,
-            'rooms' => $request->rooms,
-            // ...
-        ],
-        'description' => $request->description,
-        'status' => 'disponible',
-    ]);
+   Listing::create([
+    'user_id' => auth()->id(),
+    'company_id' => auth()->user()->company_id,
+    'title' => $request->title,
+    'description' => $request->description ?? 'Aucune description fournie', // Ajoute cette ligne
+    'price' => $request->price,
+    'offer_type' => $request->offer_type,
+    'category' => $request->category,
+    'images' => $imagePaths,
+    'location' => $request->location ?? 'Goma',
+    'status' => 'disponible',
+]);
 
-    return back()->with('status', 'Annonce publiée avec succès !');
+    return back()->with('success', 'Annonce publiée !');
+}
+
+// Pour la suppression
+public function destroy(Listing $listing)
+{
+    // Sécurité : Seul le proprio peut supprimer
+    if ($listing->user_id !== auth()->id()) {
+        abort(403);
+    }
+
+    $listing->delete();
+    return back()->with('success', 'Annonce supprimée.');
 }
 
 // fonction index pour afficher les annonces de l'entreprise de l'utilisateur connecté

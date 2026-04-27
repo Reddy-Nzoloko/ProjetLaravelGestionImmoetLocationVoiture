@@ -5,8 +5,9 @@ use App\Http\Controllers\ListingController; // Regroupement des imports
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    $listings = \App\Models\Listing::latest()->take(6)->get(); // On prend les 6 dernières annonces
+    return view('welcome', compact('listings'));
+})->name('acceuil');
 
 // MODIFICATION ICI : On passe par le Controller pour le Dashboard
 Route::get('/dashboard', [ListingController::class, 'index'])
@@ -26,5 +27,8 @@ Route::middleware('auth')->group(function () {
     // Route de modification de l'annonce
     Route::patch('/listings/{listing}', [ListingController::class, 'update'])->name('listings.update');
 });
+// Route pour afficher une annonce spécifique (optionnel)
+    Route::get('/listings/{listing}', [ListingController::class, 'show'])->name('listings.show');
+
 
 require __DIR__.'/auth.php';

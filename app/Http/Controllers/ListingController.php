@@ -81,6 +81,15 @@ public function destroy(Listing $listing)
     return back()->with('success', 'Annonce supprimée.');
 }
 
+// Affichage d'une annonce spécifique (optionnel)
+public function show(Listing $listing)
+{
+    // Eager Loading : on force Laravel à aller chercher l'entreprise
+    $listing->load('company'); 
+    
+    return view('listings.show', compact('listing'));
+}
+
 // fonction index pour afficher les annonces de l'entreprise de l'utilisateur connecté
 // index
 public function index()

@@ -116,4 +116,32 @@ public function index()
 
     return view('dashboard', compact('listings'));
 }
+
+// Fonction pour toutes les annonces optiponelle et recherche d'une annonce
+public function welcome(Request $request)
+{
+    $query = Listing::query();
+
+    // Logique de recherche
+    if ($request->filled('search')) {
+        $search = $request->get('search');
+        $query->where(function($q) use ($search) {
+            $q->where('title', 'like', "%{$search}%")
+              ->orWhere('category', 'like', "%{$search}%")
+              ->orWhere('location', 'like', "%{$search}%")
+              ->orWhere('description', 'like', "%{$search}%");
+        });
+    }
+
+    // Gestion de l'affichage
+    if ($request->filled('search') || $request->has('all')) {
+        // Si recherche ou clic sur "Voir tout", on prend tout sans limite
+        $listings = $query->latest()->get();
+    } else {
+        // Par défaut sur l'accueil, on limite à 12
+        $listings = $query->latest()->take(12)->get();
+    }
+
+    return view('welcome', compact('listings'));
+}
 }

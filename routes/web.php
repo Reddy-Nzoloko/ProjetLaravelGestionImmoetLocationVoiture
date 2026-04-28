@@ -29,6 +29,4 @@ Route::middleware('auth')->group(function () {
 });
 // Route pour afficher une annonce spécifique (optionnel)
     Route::get('/listings/{listing}', [ListingController::class, 'show'])->name('listings.show');
-
-
 require __DIR__.'/auth.php';

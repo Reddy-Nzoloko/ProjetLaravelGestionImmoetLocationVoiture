@@ -23,7 +23,8 @@ public function store(Request $request)
         'category' => 'required',
         'description' => 'nullable|string',
         'location' => 'nullable|string',
-        'images.*' => 'image|max:2048' // Max 2MB par image
+        // On accepte explicitement les formats les plus courants
+        'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120'
     ]);
 
     $imagePaths = [];
@@ -89,16 +90,18 @@ public function destroy(Listing $listing)
 }
 
 // Affichage d'une annonce spécifique (optionnel)
+// Affichage d'une annonce spécifique
 public function show(Listing $listing)
 {
-    // Eager Loading : on force Laravel à aller chercher l'entreprise
-    $listing->load('company'); 
-    return view('listings.show', compact('listing'));
-    // On augmente la vue, mais on ne change pas le "updated_at"
-    $listing->timestamps = false;
+    // 1. D'ABORD : On augmente la vue en base de données
+    // On utilise increment() qui est plus rapide et propre
+    $listing->timestamps = false; // Empêche de modifier la date 'updated_at'
     $listing->increment('views_count');
+
+    // 2. ENSUITE : On charge l'entreprise liée
+    $listing->load('company'); 
     
-    $listing->load('company');
+    // 3. ENFIN : On retourne la vue (le return doit TOUJOURS être à la fin)
     return view('listings.show', compact('listing'));
 }
 

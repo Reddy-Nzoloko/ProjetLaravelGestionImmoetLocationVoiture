@@ -17,7 +17,8 @@ class Listing extends Model
         'offer_type',    // INDISPENSABLE pour que la location fonctionne
         'images',        // INDISPENSABLE pour les photos
         'features',
-        'status'
+        'status',
+        'views_count'
     ];
 
     protected $casts = [

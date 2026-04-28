@@ -93,7 +93,12 @@ public function show(Listing $listing)
 {
     // Eager Loading : on force Laravel à aller chercher l'entreprise
     $listing->load('company'); 
+    return view('listings.show', compact('listing'));
+    // On augmente la vue, mais on ne change pas le "updated_at"
+    $listing->timestamps = false;
+    $listing->increment('views_count');
     
+    $listing->load('company');
     return view('listings.show', compact('listing'));
 }
 

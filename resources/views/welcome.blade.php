@@ -72,12 +72,20 @@
                     <div class="p-6">
                         <div class="flex justify-between items-start mb-2">
                             <h3 class="text-lg font-bold text-gray-900">{{ $listing->title }}</h3>
-                            <span class="text-indigo-600 font-black">{{ number_format($listing->price, 0, '.', ' ') }}$</span>
                         </div>
+                        <!-- Affichage du prix et des nombres des vues -->
+                         <div class="flex justify-between items-center mt-2">
+    <span class="text-indigo-600 font-bold">{{ number_format($listing->price, 0, '.', ' ') }} $</span>
+    <span class="text-gray-400 text-[10px] flex items-center">
+        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+        {{ $listing->views_count }}
+    </span>
+</div>
                         <p class="text-gray-500 text-sm flex items-center mb-6">
                             <svg class="w-4 h-4 me-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
                             {{ $listing->location }}
                         </p>
+                        
                         
                         <a href="{{ route('listings.show', $listing->id) }}" class="w-full inline-flex justify-center items-center py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-indigo-600 transition shadow-lg">
                             Voir l'annonce

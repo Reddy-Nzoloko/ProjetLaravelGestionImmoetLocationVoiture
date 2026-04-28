@@ -90,7 +90,7 @@
                             // Récupération sécurisée des données de l'entreprise
                             $company = $listing->company;
                             $companyName = $company?->name ?? 'le vendeur';
-                            $phone = $company?->whatsapp_numero ?? '243000000000'; // Numéro par défaut (ex: ton support)
+                            $phone = $company?->whatsapp_number ?? '243000000000'; // Numéro par défaut (ex: ton support)
                             
                             // Nettoyage du numéro
                             $cleanPhone = preg_replace('/[^0-9]/', '', $phone);

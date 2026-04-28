@@ -11,12 +11,19 @@ class ListingController extends Controller
     // Pour l'enregistrement
 public function store(Request $request)
 {
+    // 1. On vérifie si l'utilisateur est bien lié à une entreprise
+    if (!auth()->user()->company_id) {
+        return back()->withErrors(['error' => 'Vous devez créer ou rejoindre une entreprise avant de publier.']);
+    }
+
     $data = $request->validate([
-        'title' => 'required',
+        'title' => 'required|string|max:255',
         'price' => 'required|numeric',
-        'offer_type' => 'required', // Vente ou Location
+        'offer_type' => 'required', 
         'category' => 'required',
-        'images.*' => 'image|max:2048'
+        'description' => 'nullable|string',
+        'location' => 'nullable|string',
+        'images.*' => 'image|max:2048' // Max 2MB par image
     ]);
 
     $imagePaths = [];
@@ -26,20 +33,20 @@ public function store(Request $request)
         }
     }
 
-   Listing::create([
-    'user_id' => auth()->id(),
-    'company_id' => auth()->user()->company_id,
-    'title' => $request->title,
-    'description' => $request->description ?? 'Aucune description fournie', // Ajoute cette ligne
-    'price' => $request->price,
-    'offer_type' => $request->offer_type,
-    'category' => $request->category,
-    'images' => $imagePaths,
-    'location' => $request->location ?? 'Goma',
-    'status' => 'disponible',
-]);
+    Listing::create([
+        'user_id' => auth()->id(),
+        'company_id' => auth()->user()->company_id, // L'ID de l'entreprise
+        'title' => $request->title,
+        'description' => $request->description ?? 'Aucune description fournie',
+        'price' => $request->price,
+        'offer_type' => $request->offer_type,
+        'category' => $request->category,
+        'images' => $imagePaths,
+        'location' => $request->location ?? 'Goma',
+        'status' => 'disponible',
+    ]);
 
-    return back()->with('success', 'Annonce publiée !');
+    return redirect()->route('dashboard')->with('success', 'Annonce publiée avec succès !');
 }
 // methode pour la mise à jour d'une annonce
 public function update(Request $request, Listing $listing)

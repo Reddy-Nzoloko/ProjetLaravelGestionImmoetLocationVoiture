@@ -39,7 +39,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="text-center max-w-3xl mx-auto">
                     <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 leading-[1.1] mb-6">
-                        La plateforme n°1 à Goma pour l'Immo et l'Auto
+                        La plateforme n°1 à RDC pour l'Immo et l'Auto
                     </h1>
                     <p class="text-lg text-gray-600 mb-10 leading-relaxed">
                         Trouvez la maison de vos rêves ou votre prochain véhicule en quelques clics. Contactez directement les entreprises via WhatsApp.
@@ -60,8 +60,9 @@
                 @foreach($listings as $listing)
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
                     <div class="relative h-64 overflow-hidden">
-                        <img src="{{ asset('storage/' . $listing->images[0]) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <div class="absolute top-4 left-4">
+<img src="{{ (!empty($listing->images) && isset($listing->images[0])) ? asset('storage/' . $listing->images[0]) : asset('images/default-placeholder.png') }}" 
+     alt="{{ $listing->title }}" 
+     class="w-full h-48 object-cover">                        <div class="absolute top-4 left-4">
                             <span class="px-3 py-1 bg-white/90 backdrop-blur text-[10px] font-bold uppercase rounded-lg shadow-sm">
                                 {{ $listing->offer_type }}
                             </span>

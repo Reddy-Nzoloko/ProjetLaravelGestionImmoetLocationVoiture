@@ -18,7 +18,7 @@ return new class extends Migration
             
             // Tes colonnes personnalisées
             $table->foreignId('company_id')->nullable()->constrained()->onDelete('cascade');
-            $table->enum('role', ['superadmin', 'admin', 'agent'])->default('agent');
+            $table->enum('role', ['superadmin', 'admin', 'agent'])->default('admin');
 
             $table->rememberToken();
             $table->timestamps();

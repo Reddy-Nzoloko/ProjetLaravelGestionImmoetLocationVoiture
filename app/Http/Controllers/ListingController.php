@@ -93,15 +93,14 @@ public function destroy(Listing $listing)
 // Affichage d'une annonce spécifique
 public function show(Listing $listing)
 {
-    // 1. D'ABORD : On augmente la vue en base de données
-    // On utilise increment() qui est plus rapide et propre
-    $listing->timestamps = false; // Empêche de modifier la date 'updated_at'
+    // 1. On augmente les vues de manière sécurisée
+    // increment() sauvegarde directement en base de données, pas besoin de désactiver les timestamps manuellement ici
     $listing->increment('views_count');
 
-    // 2. ENSUITE : On charge l'entreprise liée
+    // 2. On charge l'entreprise avec ses infos
     $listing->load('company'); 
     
-    // 3. ENFIN : On retourne la vue (le return doit TOUJOURS être à la fin)
+    // 3. On retourne la vue
     return view('listings.show', compact('listing'));
 }
 
@@ -120,26 +119,31 @@ public function index()
 // Fonction pour toutes les annonces optiponelle et recherche d'une annonce
 public function welcome(Request $request)
 {
-    $query = Listing::query();
+    // On initialise la requête AVEC la jointure immédiatement
+    $query = Listing::join('companies', 'listings.company_id', '=', 'companies.id')
+                    ->select('listings.*', 'companies.rank as company_rank');
 
     // Logique de recherche
     if ($request->filled('search')) {
         $search = $request->get('search');
+        
         $query->where(function($q) use ($search) {
-            $q->where('title', 'like', "%{$search}%")
-              ->orWhere('category', 'like', "%{$search}%")
-              ->orWhere('location', 'like', "%{$search}%")
-              ->orWhere('description', 'like', "%{$search}%");
+            // Important : On précise 'listings.champ' pour éviter les ambiguïtés
+            $q->where('listings.title', 'like', '%' . $search . '%')
+              ->orWhere('listings.category', 'like', '%' . $search . '%')
+              ->orWhere('listings.location', 'like', '%' . $search . '%')
+              ->orWhere('listings.description', 'like', '%' . $search . '%');
         });
     }
 
-    // Gestion de l'affichage
+    // Le tri fonctionne maintenant car le JOIN n'a pas été écrasé
+    $query->orderBy('companies.rank', 'desc')
+          ->orderBy('listings.created_at', 'desc');
+
     if ($request->filled('search') || $request->has('all')) {
-        // Si recherche ou clic sur "Voir tout", on prend tout sans limite
-        $listings = $query->latest()->get();
+        $listings = $query->get();
     } else {
-        // Par défaut sur l'accueil, on limite à 12
-        $listings = $query->latest()->take(12)->get();
+        $listings = $query->take(12)->get();
     }
 
     return view('welcome', compact('listings'));

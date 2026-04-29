@@ -28,8 +28,25 @@ Route::middleware('auth')->group(function () {
     Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])->name('listings.destroy');
     // Route de modification de l'annonce
     Route::patch('/listings/{listing}', [ListingController::class, 'update'])->name('listings.update');
+    
 });
 // Route pour afficher une annonce spécifique (optionnel)
     Route::get('/listings/{listing}', [ListingController::class, 'show'])->name('listings.show');
-    // Si tu utilises le ListingController pour la page d'accueil
+    // route pour acceder aux prix
+    Route::get('/pricing', function () {
+    return view('pricing');
+})->name('pricing');
+
+// Route pour la connexion du super admin
+// --- ZONE SUPER ADMIN ---
+// On utilise le middleware 'role:superadmin' pour verrouiller l'accès
+Route::middleware(['auth', 'role:superadmin'])->group(function () {
+    
+    // Page de gestion des entreprises
+    Route::get('/admin/companies', [AdminController::class, 'index'])->name('admin.companies');
+        
+    // Action pour changer le rang (Premium/Gratuit)
+    Route::post('/admin/companies/{company}/update-rank', [App\Http\Controllers\AdminController::class, 'updateRank'])
+        ->name('admin.updateRank');
+});
 require __DIR__.'/auth.php';

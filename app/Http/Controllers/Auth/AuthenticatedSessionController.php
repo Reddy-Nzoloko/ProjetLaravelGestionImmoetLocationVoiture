@@ -25,10 +25,25 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = $request->user();
+
+        // 1. Redirection forcée pour le SuperAdmin
+        // On n'utilise PAS intended() pour lui, car il doit aller gérer les entreprises
+        if ($user->role === 'superadmin') {
+            return redirect()->route('admin.companies');
+        }
+
+        // 2. Redirection pour les Agents / Admins d'entreprise
+        // On essaie de les renvoyer là où ils allaient, sinon vers leur dashboard
+        if ($user->role === 'admin' || $user->role === 'agent') {
+            return redirect()->intended(route('dashboard'));
+        }
+
+        // 3. Cas par défaut (Redirection vers l'accueil si le rôle est inconnu)
+        // Note : j'utilise 'acceuil' car c'est le nom dans ton web.php
+        return redirect()->intended(route('acceuil'));
     }
 
     /**

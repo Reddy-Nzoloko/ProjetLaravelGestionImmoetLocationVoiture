@@ -76,41 +76,52 @@
                 </div>
             @else
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach($listings as $listing)
-                    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
-                        <div class="relative h-64 overflow-hidden">
-                            <img src="{{ (!empty($listing->images) && isset($listing->images[0])) ? asset('storage/' . $listing->images[0]) : asset('images/default-placeholder.png') }}" 
-                                 alt="{{ $listing->title }}" 
-                                 class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                            <div class="absolute top-4 left-4">
-                                <span class="px-3 py-1 bg-white/90 backdrop-blur text-[10px] font-bold uppercase rounded-lg shadow-sm">
-                                    {{ $listing->offer_type }}
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <div class="p-6">
-                            <h3 class="text-lg font-bold text-gray-900 mb-1">{{ $listing->title }}</h3>
-                            
-                            <div class="flex justify-between items-center mt-2">
-                                <span class="text-indigo-600 font-bold text-xl">{{ number_format($listing->price, 0, '.', ' ') }} $</span>
-                                <span class="text-gray-400 text-[10px] flex items-center">
-                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                    {{ $listing->views_count }} vues
-                                </span>
-                            </div>
+    @foreach($listings as $listing)
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+        
+        <div class="relative h-64 overflow-hidden">
+            <img src="{{ (!empty($listing->images) && isset($listing->images[0])) ? asset('storage/' . $listing->images[0]) : asset('images/default-placeholder.png') }}" 
+                 alt="{{ $listing->title }}" 
+                 class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+            
+            <div class="absolute top-4 left-4">
+                <span class="px-3 py-1 bg-white/90 backdrop-blur text-[10px] font-bold uppercase rounded-lg shadow-sm">
+                    {{ $listing->offer_type }}
+                </span>
+            </div>
+        </div>
+        
+        <div class="p-6">
+            <div class="flex items-center gap-2 mb-1">
+                <h3 class="text-lg font-bold text-gray-900 leading-tight">{{ $listing->title }}</h3>
+                
+                @if($listing->company_rank > 0)
+                    <svg class="w-5 h-5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.64.3 1.241.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" />
+                    </svg>
+                @endif
+            </div>
 
-                            <p class="text-gray-500 text-sm flex items-center mt-3 mb-6">
-                                <svg class="w-4 h-4 me-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                                {{ $listing->location }}
-                            </p>
-                            
-                            <a href="{{ route('listings.show', $listing->id) }}" class="w-full inline-flex justify-center items-center py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-indigo-600 transition shadow-lg">
-                                Voir l'annonce
-                            </a>
-                        </div>
-                    </div>
-                    @endforeach
+            <div class="flex justify-between items-center mt-2">
+                <span class="text-indigo-600 font-bold text-xl">{{ number_format($listing->price, 0, '.', ' ') }} $</span>
+                <span class="text-gray-400 text-[10px] flex items-center">
+                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    {{ $listing->views_count }} vues
+                </span>
+            </div>
+
+            <p class="text-gray-500 text-sm flex items-center mt-3 mb-6">
+                <svg class="w-4 h-4 me-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                {{ $listing->location }}
+            </p>
+            
+            <a href="{{ route('listings.show', $listing->id) }}" class="w-full inline-flex justify-center items-center py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-indigo-600 transition shadow-lg">
+                Voir l'annonce
+            </a>
+        </div>
+    </div>
+    @endforeach
+</div>
                 </div>
 
                 @if(!request('search'))

@@ -5,3 +5,5 @@ SELECT * FROM companies;
 SELECT * FROM listings;
 
 SELECT * FROM users;
+
+SELECT * FROM users WHERE email = 'kalebo';

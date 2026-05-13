@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ListingController; // Regroupement des imports
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {

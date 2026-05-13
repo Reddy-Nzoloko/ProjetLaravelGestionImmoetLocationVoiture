@@ -11,10 +11,11 @@ class Company extends Model
     //protected $fillable = ['name', 'logo', 'whatsapp_number', 'city', 'is_active'];
 protected $fillable = [
     'name',
-    'activity_sector', 
+    'activity_sector',
     'whatsapp_number',
     'city',
-    'is_active'
+    'is_active',
+    'rank',
 ];
     // Une entreprise a plusieurs utilisateurs (Admins/Agents)
     public function users(): HasMany

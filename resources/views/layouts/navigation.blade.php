@@ -12,6 +12,14 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    @auth
+                        @if(Auth::user()->role === 'superadmin')
+                            <x-nav-link :href="route('admin.companies')" :active="request()->routeIs('admin.companies')">
+                                {{ __('SuperAdmin') }}
+                            </x-nav-link>
+                        @endif
+                    @endauth
                 </div>
             </div>
 
@@ -79,6 +87,12 @@
                 </div>
 
                 <div class="mt-3 space-y-1">
+                    @if(Auth::user()->role === 'superadmin')
+                        <x-responsive-nav-link :href="route('admin.companies')" :active="request()->routeIs('admin.companies')">
+                            {{ __('SuperAdmin') }}
+                        </x-responsive-nav-link>
+                    @endif
+
                     <x-responsive-nav-link :href="route('profile.edit')">
                         {{ __('Profile') }}
                     </x-responsive-nav-link>

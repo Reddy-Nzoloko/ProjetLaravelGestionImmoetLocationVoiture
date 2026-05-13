@@ -1,5 +1,5 @@
-@extends('layouts.app') @section('content')
-<div class="py-20 bg-gray-50">
+<x-app-layout>
+    <div class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 text-center">
         <h1 class="text-5xl font-extrabold mb-4">Boostez votre visibilité</h1>
         <p class="text-gray-600 mb-16 text-lg">Choisissez le forfait qui correspond à vos ambitions à Goma.</p>
@@ -37,4 +37,4 @@
         </div>
     </div>
 </div>
-@endsection
+</x-app-layout>

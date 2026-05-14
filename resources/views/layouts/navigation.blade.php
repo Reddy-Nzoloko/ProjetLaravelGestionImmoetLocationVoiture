@@ -18,6 +18,9 @@
                             <x-nav-link :href="route('admin.companies')" :active="request()->routeIs('admin.companies')">
                                 {{ __('SuperAdmin') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('admin.badge-requests')" :active="request()->routeIs('admin.badge-requests')">
+                                {{ __('Badges') }}
+                            </x-nav-link>
                         @endif
                     @endauth
                 </div>
@@ -39,6 +42,9 @@
                         </x-slot>
 
                         <x-slot name="content">
+                            <x-dropdown-link :href="route('badge-requests.create')">
+                                {{ __('Demander un Badge') }}
+                            </x-dropdown-link>
                             <x-dropdown-link :href="route('profile.edit')">
                                 {{ __('Profile') }}
                             </x-dropdown-link>
@@ -91,7 +97,14 @@
                         <x-responsive-nav-link :href="route('admin.companies')" :active="request()->routeIs('admin.companies')">
                             {{ __('SuperAdmin') }}
                         </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.badge-requests')" :active="request()->routeIs('admin.badge-requests')">
+                            {{ __('Badges') }}
+                        </x-responsive-nav-link>
                     @endif
+
+                    <x-responsive-nav-link :href="route('badge-requests.create')">
+                        {{ __('Demander un Badge') }}
+                    </x-responsive-nav-link>
 
                     <x-responsive-nav-link :href="route('profile.edit')">
                         {{ __('Profile') }}

@@ -58,6 +58,7 @@
     <select name="activity_sector" id="activity_sector" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
         <option value="auto">Vente et Location de Véhicules</option>
         <option value="immo">Agence Immobilière</option>
+        <option value="vetement">Vente de Vêtements</option>
     </select>
 </div>
 

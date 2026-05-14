@@ -16,7 +16,17 @@ protected $fillable = [
     'city',
     'is_active',
     'rank',
+    'badge',
 ];
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Company $company) {
+            $company->listings()->delete();
+            $company->users()->delete();
+        });
+    }
+
     // Une entreprise a plusieurs utilisateurs (Admins/Agents)
     public function users(): HasMany
     {

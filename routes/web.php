@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ListingController; // Regroupement des imports
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BadgeRequestController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -29,6 +30,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/listings/{listing}', [ListingController::class, 'destroy'])->name('listings.destroy');
     // Route de modification de l'annonce
     Route::patch('/listings/{listing}', [ListingController::class, 'update'])->name('listings.update');
+
+    // Badge Requests
+    Route::get('/badge-requests/create', [BadgeRequestController::class, 'create'])->name('badge-requests.create');
+    Route::post('/badge-requests', [BadgeRequestController::class, 'store'])->name('badge-requests.store');
     
 });
 // Route pour afficher une annonce spécifique (optionnel)
@@ -42,12 +47,22 @@ Route::middleware('auth')->group(function () {
 // --- ZONE SUPER ADMIN ---
 // On utilise le middleware 'role:superadmin' pour verrouiller l'accès
 Route::middleware(['auth', 'role:superadmin'])->group(function () {
-    
     // Page de gestion des entreprises
     Route::get('/admin/companies', [AdminController::class, 'index'])->name('admin.companies');
-        
-    // Action pour changer le rang (Premium/Gratuit)
-    Route::post('/admin/companies/{company}/update-rank', [App\Http\Controllers\AdminController::class, 'updateRank'])
-        ->name('admin.updateRank');
+    Route::post('/admin/companies/{company}/update-rank', [AdminController::class, 'updateRank'])->name('admin.updateRank');
+    Route::delete('/admin/companies/{company}', [AdminController::class, 'destroy'])->name('admin.companies.destroy');
+    Route::patch('/admin/companies/{company}/toggle-active', [AdminController::class, 'toggleActive'])->name('admin.companies.toggleActive');
+
+    // Superadmin list and profile access
+    Route::get('/admin/superadmins', [AdminController::class, 'superadmins'])->name('admin.superadmins');
+
+    // Statistiques et rapports
+    Route::get('/admin/statistics', [AdminController::class, 'statistics'])->name('admin.statistics');
+    Route::get('/admin/reports', [AdminController::class, 'reports'])->name('admin.reports');
+
+    // Badge Requests
+    Route::get('/admin/badge-requests', [BadgeRequestController::class, 'index'])->name('admin.badge-requests');
+    Route::patch('/admin/badge-requests/{badgeRequest}/approve', [BadgeRequestController::class, 'approve'])->name('admin.badge-requests.approve');
+    Route::patch('/admin/badge-requests/{badgeRequest}/reject', [BadgeRequestController::class, 'reject'])->name('admin.badge-requests.reject');
 });
 require __DIR__.'/auth.php';

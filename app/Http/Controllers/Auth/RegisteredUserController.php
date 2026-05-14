@@ -34,7 +34,7 @@ class RegisteredUserController extends Controller
         'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
         'password' => ['required', 'confirmed', Rules\Password::defaults()],
         'company_name' => ['required', 'string', 'max:255'],
-        'activity_sector' => ['required', 'in:auto,immo'], // Très important !
+        'activity_sector' => ['required', 'in:auto,immo,vetement'], // Très important !
         'whatsapp_number' => ['required', 'string'],
     ]);
 

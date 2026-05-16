@@ -7,19 +7,25 @@
                 </h2>
                 <div class="mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
                     <span class="inline-block w-2 h-2 rounded-full bg-indigo-500 me-2"></span>
-                    Secteur : <span class="font-medium ms-1 uppercase">{{ auth()->user()->company->activity_sector ?? 'Non défini' }}</span>
+                    Secteur : <span class="font-medium ms-1 uppercase">{{ auth()->user()->company?->activity_sector ?? 'Non défini' }}</span>
                 </div>
             </div>
             
-            <button 
-                x-data="" 
-                x-on:click.prevent="$dispatch('open-modal', 'create-listing')"
-                class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm">
-                <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                Publier une annonce
-            </button>
+            @if(auth()->user()->company)
+                <button 
+                    x-data="" 
+                    x-on:click.prevent="$dispatch('open-modal', 'create-listing')"
+                    class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm">
+                    <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Publier une annonce
+                </button>
+            @else
+                <div class="text-sm text-gray-600 dark:text-gray-400">
+                    Vous n'êtes associé à aucune entreprise. Créez ou rejoignez une entreprise pour publier des annonces.
+                </div>
+            @endif
         </div>
     </x-slot>
 
@@ -196,12 +202,18 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                         </svg>
                         <p class="text-gray-500 dark:text-gray-400 font-medium">Aucune publication trouvée dans votre catalogue.</p>
-                        <button x-on:click.prevent="$dispatch('open-modal', 'create-listing')" class="mt-4 text-indigo-600 font-bold hover:underline text-sm uppercase tracking-tight">Commencer à vendre</button>
+                        @if(auth()->user()->company)
+                            <button x-on:click.prevent="$dispatch('open-modal', 'create-listing')" class="mt-4 text-indigo-600 font-bold hover:underline text-sm uppercase tracking-tight">Commencer à vendre</button>
+                        @else
+                            <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">Vous devez être associé à une entreprise pour publier des annonces.</p>
+                        @endif
                     </div>
                 @endforelse
             </div>
         </div>
     </div>
 
-    @include('listings.partials.listing-modal')
+    @if(auth()->user()->company)
+        @include('listings.partials.listing-modal')
+    @endif
 </x-app-layout>

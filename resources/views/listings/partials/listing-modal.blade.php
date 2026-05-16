@@ -1,7 +1,7 @@
 <x-modal name="create-listing" focusable>
     @php
         // On récupère le secteur de l'entreprise de l'utilisateur connecté
-        $sector = auth()->user()->company->activity_sector; 
+        $sector = auth()->user()->company?->activity_sector ?? 'auto';
     @endphp
 
     <form method="post" action="{{ route('listings.store') }}" enctype="multipart/form-data" class="p-6" 

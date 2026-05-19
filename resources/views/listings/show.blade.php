@@ -45,8 +45,12 @@
                     <div class="flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between flex-wrap gap-2">
-                                <span class="px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest {{ $listing->category === 'auto' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800' }}">
-                                    {{ $listing->category === 'auto' ? 'Véhicule' : 'Immobilier' }}
+                                @php
+                                    $catBg = $listing->category === 'auto' ? 'bg-blue-100 text-blue-800' : ($listing->category === 'vetement' ? 'bg-pink-100 text-pink-800' : 'bg-emerald-100 text-emerald-800');
+                                    $catLabel = $listing->category === 'auto' ? 'Véhicule' : ($listing->category === 'vetement' ? 'Habillement' : 'Immobilier');
+                                @endphp
+                                <span class="px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest {{ $catBg }}">
+                                    {{ $catLabel }}
                                 </span>
                                 <div class="flex items-center text-sm font-medium text-gray-500 dark:text-gray-400">
                                     <span class="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 p-1 rounded-md me-2">

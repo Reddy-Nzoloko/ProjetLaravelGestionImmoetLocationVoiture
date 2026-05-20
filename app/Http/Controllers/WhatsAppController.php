@@ -37,16 +37,14 @@ class WhatsAppController extends Controller
             $message .= "\nPouvez-vous me fournir plus d'informations?\n";
             $message .= "Merci!";
 
-            // Formatter le numéro WhatsApp (enlever les espaces et caractères spéciaux)
-            $whatsapp_number = preg_replace('/[^0-9+]/', '', $listing->company->whatsapp_number);
-            
-            // S'assurer que le numéro commence par +
-            if (!str_starts_with($whatsapp_number, '+')) {
-                $whatsapp_number = '+' . $whatsapp_number;
+            // Normaliser le numéro WhatsApp pour ouvrir directement le chat
+            $whatsapp_number = $this->normalizeWhatsappNumber($listing->company->whatsapp_number);
+            if (!$whatsapp_number) {
+                return redirect()->back()->with('error', 'Le numéro WhatsApp de cette entreprise n\'est pas disponible ou est mal formaté.');
             }
 
-            // Créer le lien WhatsApp
-            $whatsapp_link = "https://wa.me/" . str_replace('+', '', $whatsapp_number) . "?text=" . urlencode($message);
+            // Créer le lien WhatsApp direct
+            $whatsapp_link = "https://api.whatsapp.com/send?phone=" . $whatsapp_number . "&text=" . urlencode($message);
 
             // Redirection vers WhatsApp
             return redirect($whatsapp_link);
@@ -111,15 +109,14 @@ class WhatsAppController extends Controller
             $message .= "Pouvez-vous me fournir plus d'informations?\n";
             $message .= "Merci!";
 
-            // Formatter le numéro WhatsApp
-            $whatsapp_number = preg_replace('/[^0-9+]/', '', $company->whatsapp_number);
-            
-            if (!str_starts_with($whatsapp_number, '+')) {
-                $whatsapp_number = '+' . $whatsapp_number;
+            // Normaliser le numéro WhatsApp pour ouvrir directement le chat
+            $whatsapp_number = $this->normalizeWhatsappNumber($company->whatsapp_number);
+            if (!$whatsapp_number) {
+                return redirect()->back()->with('error', 'Le numéro WhatsApp de cette entreprise n\'est pas disponible ou est mal formaté.');
             }
 
-            // Créer le lien WhatsApp
-            $whatsapp_link = "https://wa.me/" . str_replace('+', '', $whatsapp_number) . "?text=" . urlencode($message);
+            // Créer le lien WhatsApp direct
+            $whatsapp_link = "https://api.whatsapp.com/send?phone=" . $whatsapp_number . "&text=" . urlencode($message);
 
             // Redirection vers WhatsApp
             return redirect($whatsapp_link);
@@ -127,5 +124,25 @@ class WhatsAppController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Une erreur est survenue: ' . $e->getMessage());
         }
+    }
+
+    private function normalizeWhatsappNumber(string $rawNumber): ?string
+    {
+        $digits = preg_replace('/[^0-9]/', '', $rawNumber);
+        if (!$digits) {
+            return null;
+        }
+
+        // Si numéro local commence par 0, remplacer par l'indicatif du pays DR Congo par défaut
+        if (str_starts_with($digits, '0')) {
+            $digits = '243' . substr($digits, 1);
+        }
+
+        // Si numéro sans indicatif et 9 chiffres, on ajoute 243 par défaut
+        if (strlen($digits) === 9) {
+            $digits = '243' . $digits;
+        }
+
+        return $digits;
     }
 }

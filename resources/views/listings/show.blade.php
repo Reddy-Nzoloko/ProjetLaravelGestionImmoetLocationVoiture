@@ -96,12 +96,18 @@
                             $companyName = $company?->name ?? 'le vendeur';
                             $phone = $company?->whatsapp_number ?? '243000000000'; // Numéro par défaut (ex: ton support)
                             
-                            // Nettoyage du numéro
+                            // Nettoyage et normalisation du numéro
                             $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
+                            if (str_starts_with($cleanPhone, '0')) {
+                                $cleanPhone = '243' . substr($cleanPhone, 1);
+                            }
+                            if (strlen($cleanPhone) === 9) {
+                                $cleanPhone = '243' . $cleanPhone;
+                            }
                             
                             // Message personnalisé
                             $text = "Bonjour " . $companyName . ", je suis intéressé par l'annonce : " . $listing->title . " (" . number_format($listing->price, 0, '.', ' ') . "$). Est-elle toujours disponible ?";
-                            $whatsappUrl = "https://wa.me/" . $cleanPhone . "?text=" . urlencode($text);
+                            $whatsappUrl = "https://api.whatsapp.com/send?phone=" . $cleanPhone . "&text=" . urlencode($text);
                         @endphp
 
                         <div class="mt-10">

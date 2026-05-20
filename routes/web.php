@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ListingController; // Regroupement des imports
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BadgeRequestController;
+use App\Http\Controllers\WhatsAppController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -38,6 +39,11 @@ Route::middleware('auth')->group(function () {
 });
 // Route pour afficher une annonce spécifique (optionnel)
     Route::get('/listings/{listing}', [ListingController::class, 'show'])->name('listings.show');
+    
+    // Routes WhatsApp
+    Route::get('/whatsapp/product/{listing}', [WhatsAppController::class, 'sendProductMessage'])->name('whatsapp.product');
+    Route::post('/whatsapp/cart', [WhatsAppController::class, 'sendCartMessage'])->name('whatsapp.cart');
+    
     // route pour acceder aux prix
     Route::get('/pricing', function () {
     return view('pricing');

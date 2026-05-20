@@ -70,7 +70,11 @@ class AdminController extends Controller
             ->orderByDesc('rank')
             ->get();
 
-        $companiesPerMonth = Company::selectRaw('MONTH(created_at) as month, count(*) as total')
+        $monthExpression = DB::getDriverName() === 'sqlite'
+            ? "CAST(strftime('%m', created_at) AS INTEGER)"
+            : 'MONTH(created_at)';
+
+        $companiesPerMonth = Company::selectRaw("{$monthExpression} as month, count(*) as total")
             ->groupBy('month')
             ->orderBy('month')
             ->get();
@@ -94,7 +98,11 @@ class AdminController extends Controller
             ->whereYear('created_at', now()->year)
             ->get();
 
-        $annualCompanies = Company::selectRaw('YEAR(created_at) as year, count(*) as total')
+        $yearExpression = DB::getDriverName() === 'sqlite'
+            ? "CAST(strftime('%Y', created_at) AS INTEGER)"
+            : 'YEAR(created_at)';
+
+        $annualCompanies = Company::selectRaw("{$yearExpression} as year, count(*) as total")
             ->groupBy('year')
             ->orderBy('year')
             ->get();

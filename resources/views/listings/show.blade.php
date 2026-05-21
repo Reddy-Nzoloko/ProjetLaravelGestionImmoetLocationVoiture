@@ -1,4 +1,16 @@
 <x-app-layout>
+    @section('meta')
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="{{ $listing->title }} | {{ $listing->company?->name ?? config('app.name') }}">
+        <meta property="og:description" content="{{ \Illuminate\Support\Str::limit($listing->description ?? 'Découvrez ce bien intéressant.', 120) }}">
+        <meta property="og:url" content="{{ route('listings.show', $listing) }}">
+        @if(!empty($listing->images) && count($listing->images) > 0)
+            <meta property="og:image" content="{{ asset('storage/' . $listing->images[0]) }}">
+        @endif
+        <meta property="og:site_name" content="{{ config('app.name') }}">
+        <meta name="twitter:card" content="summary_large_image">
+    @endsection
+
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -91,23 +103,8 @@
                         </div>
 
                         @php
-                            // Récupération sécurisée des données de l'entreprise
-                            $company = $listing->company;
-                            $companyName = $company?->name ?? 'le vendeur';
-                            $phone = $company?->whatsapp_number ?? '243000000000'; // Numéro par défaut (ex: ton support)
-                            
-                            // Nettoyage et normalisation du numéro
-                            $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
-                            if (str_starts_with($cleanPhone, '0')) {
-                                $cleanPhone = '243' . substr($cleanPhone, 1);
-                            }
-                            if (strlen($cleanPhone) === 9) {
-                                $cleanPhone = '243' . $cleanPhone;
-                            }
-                            
-                            // Message personnalisé
-                            $text = "Bonjour " . $companyName . ", je suis intéressé par l'annonce : " . $listing->title . " (" . number_format($listing->price, 0, '.', ' ') . "$). Est-elle toujours disponible ?";
-                            $whatsappUrl = "https://api.whatsapp.com/send?phone=" . $cleanPhone . "&text=" . urlencode($text);
+                            // Redirection vers le contrôleur WhatsApp pour le message enrichi
+                            $whatsappUrl = route('whatsapp.product', $listing->id);
                         @endphp
 
                         <div class="mt-10">

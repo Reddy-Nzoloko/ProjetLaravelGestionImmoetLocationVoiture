@@ -23,19 +23,29 @@ class WhatsAppController extends Controller
             }
 
             // Construire le message
+            $listingUrl = url()->route('listings.show', $listing);
+            $imageUrl = !empty($listing->images) && count($listing->images) > 0
+                ? asset('storage/' . $listing->images[0])
+                : '';
+
             $message = "Bonjour,\n\n";
-            $message .= "Je suis intéressé par l'annonce suivante:\n\n";
-            $message .= "📍 " . $listing->title . "\n";
+            $message .= "Je suis intéressé par ce produit :\n\n";
+            $message .= "🏷️ " . $listing->title . "\n";
             $message .= "💰 Prix: " . number_format($listing->price, 2) . " $\n";
             $message .= "📌 Localisation: " . $listing->location . "\n";
-            $message .= "🏷️ Catégorie: " . $listing->category . "\n";
+            $message .= "🗂️ Catégorie: " . $listing->category . "\n";
             
             if ($listing->offer_type) {
                 $message .= "📋 Type d'offre: " . $listing->offer_type . "\n";
             }
             
-            $message .= "\nPouvez-vous me fournir plus d'informations?\n";
-            $message .= "Merci!";
+            if ($imageUrl) {
+                $message .= "\nPhoto produit : " . $imageUrl . "\n";
+            }
+
+            $message .= "\nLien annonce : " . $listingUrl . "\n\n";
+            $message .= "Est-ce toujours disponible ?\n";
+            $message .= "Merci !";
 
             // Normaliser le numéro WhatsApp pour ouvrir directement le chat
             $whatsapp_number = $this->normalizeWhatsappNumber($listing->company->whatsapp_number);
@@ -106,6 +116,7 @@ class WhatsAppController extends Controller
             $message .= "━━━━━━━━━━━━━━━━━━━━━━\n";
             $message .= "💼 Total: " . number_format($total, 2) . " $\n";
             $message .= "━━━━━━━━━━━━━━━━━━━━━━\n\n";
+            $message .= "Voir l'annonce: " . route('listings.show', $listings->first()) . "\n\n";
             $message .= "Pouvez-vous me fournir plus d'informations?\n";
             $message .= "Merci!";
 

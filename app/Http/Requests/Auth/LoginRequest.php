@@ -42,6 +42,14 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        if ($blockedMessage = $this->blockedAccountMessage()) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => $blockedMessage,
+            ]);
+        }
+
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
@@ -51,6 +59,27 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+    }
+
+    /**
+     * Return a custom blocked account message when the company is inactive.
+     */
+    protected function blockedAccountMessage(): ?string
+    {
+        $email = $this->string('email');
+        $user = \App\Models\User::with('company')->where('email', $email)->first();
+
+        if (! $user || $user->role === 'superadmin') {
+            return null;
+        }
+
+        if ($user->company?->is_active === false) {
+            $supportEmail = \App\Models\User::where('role', 'superadmin')->value('email') ?? 'support@votre-site.com';
+
+            return "Désolé, votre compte est bloqué. Veuillez contacter {$supportEmail} pour que votre compte soit débloqué.";
+        }
+
+        return null;
     }
 
     /**

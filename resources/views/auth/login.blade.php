@@ -1,47 +1,70 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <div class="relative overflow-hidden rounded-3xl shadow-2xl ring-1 ring-black/10 bg-white max-w-4xl mx-auto">
+        <div class="absolute inset-0 bg-gradient-to-br from-sky-500/20 via-indigo-400/15 to-violet-500/10 pointer-events-none"></div>
+        <div class="relative grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-10">
+            <div class="flex flex-col justify-center rounded-3xl bg-slate-900/95 p-8 text-white shadow-xl overflow-hidden">
+                <div class="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-indigo-500/30 blur-2xl animate-pulse"></div>
+                <div class="absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-cyan-400/20 blur-3xl"></div>
+                <div class="relative z-10 space-y-6">
+                    <div>
+                        <h1 class="text-4xl font-bold tracking-tight">Bienvenue</h1>
+                        <p class="mt-3 text-sm leading-6 text-slate-200/90">Connectez-vous pour accéder à votre tableau de bord et gérer vos entreprises, vos agents et vos offres.</p>
+                    </div>
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+                    <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-lg shadow-slate-900/5 ring-1 ring-white/10 backdrop-blur-sm">
+                        <p class="text-sm text-cyan-200 font-semibold uppercase tracking-[0.24em]">Connexion sécurisée</p>
+                        <p class="mt-3 text-sm text-slate-300">Utilisez votre adresse email et votre mot de passe pour vous connecter.</p>
+                        <div class="mt-6 grid gap-3 text-sm text-slate-100">
+                            <p class="flex items-center gap-2"><span class="inline-flex h-2.5 w-2.5 rounded-full bg-cyan-300"></span> Interface moderne avec Tailwind CSS</p>
+                            <p class="flex items-center gap-2"><span class="inline-flex h-2.5 w-2.5 rounded-full bg-cyan-300"></span> Notification si votre compte est bloqué</p>
+                            <p class="flex items-center gap-2"><span class="inline-flex h-2.5 w-2.5 rounded-full bg-cyan-300"></span> Support superadmin disponible</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <div class="relative rounded-3xl bg-white p-8 shadow-xl ring-1 ring-slate-200/60">
+                <div class="mb-6">
+                    <h2 class="text-3xl font-semibold text-slate-900">Connexion</h2>
+                    <p class="mt-2 text-sm text-slate-500">Entrez vos identifiants pour continuer.</p>
+                </div>
+
+                <x-auth-session-status class="mb-4 rounded-2xl bg-emerald-50 border border-emerald-100 p-4 text-sm text-emerald-700" :status="session('status')" />
+
+                <form method="POST" action="{{ route('login') }}" class="space-y-5">
+                    @csrf
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-slate-700">Email</label>
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus autocomplete="username" class="mt-2 block w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100" />
+                        <x-input-error :messages="$errors->get('email')" class="mt-2 text-sm text-red-600" />
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-slate-700">Mot de passe</label>
+                        <input id="password" name="password" type="password" required autocomplete="current-password" class="mt-2 block w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100" />
+                        <x-input-error :messages="$errors->get('password')" class="mt-2 text-sm text-red-600" />
+                    </div>
+
+                    <div class="flex items-center justify-between gap-3">
+                        <label class="inline-flex items-center gap-2 text-sm text-slate-600">
+                            <input id="remember_me" type="checkbox" name="remember" class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+                            Se souvenir de moi
+                        </label>
+
+                        @if (Route::has('password.request'))
+                            <a href="{{ route('password.request') }}" class="text-sm font-medium text-indigo-600 transition hover:text-indigo-700">Mot de passe oublié ?</a>
+                        @endif
+                    </div>
+
+                    <button type="submit" class="w-full rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40">Se connecter</button>
+                </form>
+
+                <div class="mt-8 rounded-3xl bg-slate-50 p-4 text-sm text-slate-600 ring-1 ring-slate-200">
+                    <p class="font-medium text-slate-800">Besoin d’aide ?</p>
+                    <p class="mt-2">Si votre entreprise est bloquée, vous recevrez un message avec l’email du superadmin.</p>
+                </div>
+            </div>
         </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
+    </div>
 </x-guest-layout>

@@ -16,10 +16,10 @@ Route::get('/', [ListingController::class, 'welcome'])->name('acceuil');
 
 // MODIFICATION ICI : On passe par le Controller pour le Dashboard
 Route::get('/dashboard', [ListingController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'active_company'])
     ->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'active_company'])->group(function () {
     // Profil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -7,3 +7,5 @@ SELECT * FROM listings;
 SELECT * FROM users;
 
 SELECT * FROM users WHERE email = 'kalebo';
+
+reprise du travail

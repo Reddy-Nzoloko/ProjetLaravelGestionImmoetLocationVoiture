@@ -39,9 +39,9 @@ class EnsureCompanyIsActive
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            // Rediriger vers la page de connexion avec un message
+            // Rediriger vers la page de connexion avec un message court et clair
             return redirect()->route('login')->withErrors([
-                'email' => "Votre entreprise « {$user->company->name} » a été bloquée. Pour restaurer l'accès, veuillez contacter l'administrateur système.",
+                'email' => 'Vous êtes bloqué, veuillez contacter le super admin.',
             ]);
         }
 

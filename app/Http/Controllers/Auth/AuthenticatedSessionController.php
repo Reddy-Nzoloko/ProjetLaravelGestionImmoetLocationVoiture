@@ -29,6 +29,17 @@ class AuthenticatedSessionController extends Controller
 
         $user = $request->user();
 
+        // Bloquer la connexion si l'entreprise de l'utilisateur est désactivée
+        if ($user->company && $user->company->is_active === false) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'Vous êtes bloqué, veuillez contacter le super admin.',
+            ]);
+        }
+
         // 1. Redirection forcée pour le SuperAdmin
         // On n'utilise PAS intended() pour lui, car il doit aller gérer les entreprises
         if ($user->role === 'superadmin') {

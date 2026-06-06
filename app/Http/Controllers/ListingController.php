@@ -93,8 +93,12 @@ public function destroy(Listing $listing)
 // Affichage d'une annonce spécifique
 public function show(Listing $listing)
 {
+    // Refuser l'accès aux annonces d'une entreprise bloquée
+    if (! $listing->company?->is_active) {
+        abort(404);
+    }
+
     // 1. On augmente les vues de manière sécurisée
-    // increment() sauvegarde directement en base de données, pas besoin de désactiver les timestamps manuellement ici
     $listing->increment('views_count');
 
     // 2. On charge l'entreprise avec ses infos
@@ -121,6 +125,7 @@ public function welcome(Request $request)
 {
     // On initialise la requête AVEC la jointure immédiatement
     $query = Listing::join('companies', 'listings.company_id', '=', 'companies.id')
+                    ->where('companies.is_active', true)
                     ->select('listings.*', 'companies.rank as company_rank');
 
     // Logique de recherche

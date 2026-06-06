@@ -34,15 +34,7 @@ class EnsureCompanyIsActive
 
         // Vérifier si l'entreprise est active
         if ($user->company->is_active === false) {
-            // Déconnecter l'utilisateur
-            auth()->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-            // Rediriger vers la page de connexion avec un message court et clair
-            return redirect()->route('login')->withErrors([
-                'email' => 'Vous êtes bloqué, veuillez contacter le super admin.',
-            ]);
+            return redirect()->route('company.blocked');
         }
 
         return $next($request);

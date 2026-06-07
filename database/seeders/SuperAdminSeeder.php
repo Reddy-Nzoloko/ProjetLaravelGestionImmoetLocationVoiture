@@ -11,6 +11,7 @@ class SuperAdminSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+    // seeders
    public function run(): void
 {
     \App\Models\User::create([

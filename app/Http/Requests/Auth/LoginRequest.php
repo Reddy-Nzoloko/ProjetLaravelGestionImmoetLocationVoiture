@@ -73,7 +73,7 @@ class LoginRequest extends FormRequest
             return null;
         }
 
-        if ($user->company?->is_active === false) {
+        if (! $user->company?->is_active) {
             $supportEmail = \App\Models\User::where('role', 'superadmin')->value('email')
                 ?? config('mail.from.address', 'support@votre-site.com');
 

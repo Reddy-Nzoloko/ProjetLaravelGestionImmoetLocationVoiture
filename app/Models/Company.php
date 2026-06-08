@@ -19,6 +19,10 @@ protected $fillable = [
     'badge',
 ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
     protected static function booted(): void
     {
         static::deleting(function (Company $company) {

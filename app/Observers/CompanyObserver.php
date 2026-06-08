@@ -15,12 +15,12 @@ class CompanyObserver
     public function updated(Company $company): void
     {
         // Si is_active passe de true à false (entreprise bloquée)
-        if ($company->isDirty('is_active') && $company->is_active === false) {
+        if ($company->isDirty('is_active') && ! $company->is_active) {
             $this->notifyUsersOfBlocking($company);
         }
 
         // Si is_active passe de false à true (entreprise débloquée)
-        if ($company->isDirty('is_active') && $company->is_active === true) {
+        if ($company->isDirty('is_active') && $company->is_active) {
             $this->notifyUsersOfUnblocking($company);
         }
     }

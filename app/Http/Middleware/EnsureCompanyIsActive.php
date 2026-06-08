@@ -33,7 +33,7 @@ class EnsureCompanyIsActive
         }
 
         // Vérifier si l'entreprise est active
-        if ($user->company->is_active === false) {
+        if (! $user->company->is_active) {
             return redirect()->route('company.blocked');
         }
 

@@ -74,9 +74,10 @@ class LoginRequest extends FormRequest
         }
 
         if ($user->company?->is_active === false) {
-            $supportEmail = \App\Models\User::where('role', 'superadmin')->value('email') ?? 'support@votre-site.com';
+            $supportEmail = \App\Models\User::where('role', 'superadmin')->value('email')
+                ?? config('mail.from.address', 'support@votre-site.com');
 
-            return "Votre entreprise « {$user->company->name} » a été bloquée. Pour restaurer l'accès, veuillez contacter l'administrateur système : {$supportEmail}";
+            return "Votre entreprise « {$user->company->name} » est bloquée. Pour restaurer l'accès, veuillez contacter le superadmin : {$supportEmail}";
         }
 
         return null;

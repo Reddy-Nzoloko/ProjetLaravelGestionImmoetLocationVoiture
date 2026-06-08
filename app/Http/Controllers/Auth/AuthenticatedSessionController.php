@@ -35,9 +35,14 @@ class AuthenticatedSessionController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect()->route('login')->withErrors([
-                'email' => 'Vous êtes bloqué, veuillez contacter le super admin.',
-            ]);
+            $supportEmail = \App\Models\User::where('role', 'superadmin')->value('email')
+                ?? config('mail.from.address', 'support@votre-site.com');
+
+            return redirect()->route('login')
+                ->withErrors([
+                    'email' => "Votre entreprise \"{$user->company->name}\" est bloquée. Contactez le superadmin : {$supportEmail}",
+                ])
+                ->withInput($request->only('email'));
         }
 
         // 1. Redirection forcée pour le SuperAdmin

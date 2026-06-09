@@ -22,11 +22,14 @@ Route::get('/dashboard', [ListingController::class, 'index'])
 Route::get('/company-blocked', function () {
     $superAdmin = \App\Models\User::where('role', 'superadmin')->with('company')->first();
     $supportEmail = $superAdmin->email ?? config('mail.from.address', 'support@votre-site.com');
+    $supportMailto = 'mailto:' . $supportEmail
+        . '?subject=' . urlencode('Demande de réactivation de compte')
+        . '&body=' . urlencode('Bonjour, mon entreprise est bloquée et je souhaite demander sa réactivation.');
     $supportWhatsapp = $superAdmin?->company?->whatsapp_number;
     $supportWhatsapp = $supportWhatsapp ? preg_replace('/\D+/', '', $supportWhatsapp) : null;
     $supportWhatsappUrl = $supportWhatsapp ? 'https://api.whatsapp.com/send?phone=' . $supportWhatsapp . '&text=' . urlencode('Bonjour, mon entreprise est bloquée et je souhaite demander sa réactivation.') : null;
 
-    return view('company-blocked', compact('supportEmail', 'supportWhatsappUrl'));
+    return view('company-blocked', compact('supportMailto', 'supportWhatsappUrl'));
 })->middleware('auth')->name('company.blocked');
 
 Route::middleware(['auth', 'active_company'])->group(function () {

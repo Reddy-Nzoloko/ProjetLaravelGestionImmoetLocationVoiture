@@ -19,13 +19,13 @@
                     <div class="space-y-4">
                         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Votre entreprise est bloquée</h1>
                         <p class="text-gray-600 dark:text-gray-300">Veuillez réactiver votre compte auprès du super admin pour retrouver l'accès à votre tableau de bord.</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Super admin : <strong>{{ $supportEmail }}</strong></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Utilisez le bouton ci-dessous pour contacter le super admin sans afficher directement son adresse.</p>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-                        <a href="mailto:{{ $supportEmail }}?subject={{ urlencode('Demande de réactivation de compte') }}&body={{ urlencode('Bonjour,\n\nMon entreprise est bloquée et je souhaite demander sa réactivation.\n\nCordialement,\n') }}"
+                        <a href="{{ $supportMailto }}"
                             class="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-6 py-4 text-white font-semibold hover:bg-indigo-700 transition">
-                            Envoyer un mail
+                            Contacter le super admin
                         </a>
 
                         @if ($supportWhatsappUrl)

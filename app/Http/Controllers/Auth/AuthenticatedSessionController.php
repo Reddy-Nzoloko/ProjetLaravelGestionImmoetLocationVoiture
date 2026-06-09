@@ -38,11 +38,16 @@ class AuthenticatedSessionController extends Controller
             $supportEmail = \App\Models\User::where('role', 'superadmin')->value('email')
                 ?? config('mail.from.address', 'support@votre-site.com');
 
+            $supportMailto = 'mailto:' . $supportEmail
+                . '?subject=' . urlencode('Demande de réactivation de compte')
+                . '&body=' . urlencode("Bonjour,\n\nMon entreprise est bloquée et je souhaite demander sa réactivation.\n\nCordialement,\n");
+
             return redirect()->route('login')
                 ->withErrors([
-                    'email' => "Votre entreprise \"{$user->company->name}\" est bloquée. Contactez le superadmin : {$supportEmail}",
+                    'email' => "Votre entreprise \"{$user->company->name}\" est bloquée. Utilisez le bouton ci-dessous pour contacter le superadmin.",
                 ])
-                ->withInput($request->only('email'));
+                ->withInput($request->only('email'))
+                ->with('support_mailto', $supportMailto);
         }
 
         // 1. Redirection forcée pour le SuperAdmin

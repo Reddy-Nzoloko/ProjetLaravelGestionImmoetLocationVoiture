@@ -40,6 +40,11 @@
                             <div class="flex-1">
                                 <h3 class="font-semibold text-red-800 mb-2">Accès refusé</h3>
                                 <p class="text-red-700 text-sm mb-3">{{ $errors->first('email') }}</p>
+                                @if (session('support_mailto'))
+                                    <a href="{{ session('support_mailto') }}" class="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700 transition">
+                                        Contacter le superadmin
+                                    </a>
+                                @endif
                                 <p class="text-xs text-red-600">Un email de notification a été envoyé à l'administrateur.</p>
                             </div>
                         </div>
